@@ -23,7 +23,13 @@ function read(weblogicFile, callback) {
     return callback(null);
 }
 
-function write(file, callback) {
+function write(file, data, callback) {
+    fs.appendFile(file, data.host, function (err) {
+        return callback(err);
+    });
+    fs.appendFile(file, data.port, function (err) {
+        return callback(err);
+    }); 
     return callback(null);
 }
 
