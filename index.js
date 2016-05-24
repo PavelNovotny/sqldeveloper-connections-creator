@@ -9,12 +9,11 @@ log.level("error");
 
 
 exports.create = function create(weblogicDatasources, connectionsFile, callback) {
-    read(weblogicDatasources, function(err) {
+    read(weblogicDatasources, function(err, data) {
         if (err) return callback(err);
-        write(connectionsFile, function(err) {
+        write(connectionsFile, data, function(err) {
             if (err) return callback(err);
         });
-        return callback(null);
     });
 }
 
@@ -26,32 +25,33 @@ function read(weblogicFile, callback) {
 
     lineReader.on('line', function (line) {
         var arr = line.split(":");
+        var data ={};
         console.log('Line from file:', line);
         if (arr.length > 4) { //service
-            var connectionName=arr[0].split("[")[0];
-            var host=arr[3].split("@")[1];
-            var port=arr[4].split("/")[0];
-            console.log('connection name:', connectionName);
-            console.log('host:', host);
-            console.log('port:', port);
+            data.connectionName=arr[0].split("[")[0];
+            data.host=arr[3].split("@")[1];
+            data.port=arr[4].split("/")[0];
+            console.log('connection name:', data.connectionName);
+            console.log('host:', data.host);
+            console.log('port:', data.port);
             if (arr.length === 5) { //service
-                var service=arr[4].split("/")[1].split("]")[0];
-                var user=arr[4].split("/")[1].split("]")[1].split("[")[1];
-                var passw=arr[4].split("/")[2].split("]")[0];
-                console.log('service:', service);
-                console.log('user:', user);
-                console.log('passw:', passw);
+                data.service=arr[4].split("/")[1].split("]")[0];
+                data.user=arr[4].split("/")[1].split("]")[1].split("[")[1];
+                data.passw=arr[4].split("/")[2].split("]")[0];
+                console.log('service:', data.service);
+                console.log('user:', data.user);
+                console.log('passw:', data.passw);
             } else if (arr.length ===6) { //sid
-                var sid=arr[5].split("]")[0];
-                var user=arr[5].split("]")[1].split("[")[1].split("/")[0];
-                var passw=arr[5].split("]")[1].split("[")[1].split("/")[1];
-                console.log('sid:', sid);
-                console.log('user:', user);
-                console.log('passw:', passw);
+                data.sid=arr[5].split("]")[0];
+                data.user=arr[5].split("]")[1].split("[")[1].split("/")[0];
+                data.passw=arr[5].split("]")[1].split("[")[1].split("/")[1];
+                console.log('sid:', data.sid);
+                console.log('user:', data.user);
+                console.log('passw:', data.passw);
             }
+            callback(null, data);
         }
     });
- return callback(null);
 }
 
 function write(file, data, callback) {
