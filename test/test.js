@@ -11,7 +11,7 @@ describe('create-sqldeveloper-connections', function() {
                     log.error(err);
                     return done();
                 }
-                log.error("pls check ../data/connections.xml");
+                log.info("pls check ../data/connections.xml");
                 done();
             });
         });
