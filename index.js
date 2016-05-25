@@ -8,10 +8,10 @@ var log = bunyan.createLogger({name: "bgzReader"});
 log.level("error");
 
 
-exports.create = function create(weblogicDatasources, connectionsFile, callback) {
+exports.create = function create(weblogicDatasources, connectionsFile, env, callback) {
     read(weblogicDatasources, function(err, data) {
         if (err) return callback(err);
-        write(connectionsFile, data, function(err) {
+        write(connectionsFile, data, env, function(err) {
             if (err) return callback(err);
         });
     });
@@ -54,13 +54,23 @@ function read(weblogicFile, callback) {
     });
 }
 
-function write(file, data, callback) {
-    fs.appendFile(file, data.host, function (err) {
+function write(file, data, env, callback) {
+    var reference = fs.readFileSync('../data/template.txt', {encoding:'utf8'});
+    reference =  reference.replace(new RegExp('REPLACE_CONN_NAME', 'g'), data.connectionName+env);
+    if (data.service === undefined) {
+        reference =  reference.replace(new RegExp('REPLACE_SID', 'g'), data.sid);
+        reference =  reference.replace(new RegExp('REPLACE_STRING_SID', 'g'), ':'+data.sid);
+    } else {
+        reference =  reference.replace(new RegExp('REPLACE_SID', 'g'), data.service);
+        reference =  reference.replace(new RegExp('"sid"', 'g'), '"serviceName"');
+        reference =  reference.replace(new RegExp('REPLACE_STRING_SID', 'g'), '/'+data.service);
+    }
+    reference =  reference.replace(new RegExp('REPLACE_PORT', 'g'), data.port);
+    reference =  reference.replace(new RegExp('REPLACE_HOST', 'g'), data.host);
+    reference =  reference.replace(new RegExp('REPLACE_USER', 'g'), data.user);
+    fs.appendFile(file, reference, function (err) {
         return callback(err);
     });
-    fs.appendFile(file, data.port, function (err) {
-        return callback(err);
-    }); 
     return callback(null);
 }
 
