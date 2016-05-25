@@ -1,0 +1,26 @@
+{
+  "name": "sqldeveloper-connections-creator",
+  "version": "1.0.0",
+  "description": "Javascript module for creating sqldeveloper connections.xml",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PavelNovotny/sqldeveloper-connections-creator.git"
+  },
+  "keywords": [
+    "sqldeveloper",
+    "connections.xml"
+  ],
+  "author": "Pavel Novotny",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PavelNovotny/sqldeveloper-connections-creator/issues"
+  },
+  "homepage": "https://github.com/PavelNovotny/sqldeveloper-connections-creator#readme",
+  "dependencies": {
+    "bunyan": "^1.8.1"
+  }
+}
